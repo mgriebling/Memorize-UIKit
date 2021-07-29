@@ -8,12 +8,9 @@
 import SwiftUI
 
 struct ContentView: View {
-    var emojis = [
-        "🏁🇨🇦🏴‍☠️🇺🇸🇬🇧🇩🇪🏳️‍🌈🎌🇫🇲🇸🇳🇹🇿🇪🇸🇸🇱🇱🇷🇽🇰🇳🇷🇱🇨🇷🇪🇰🇷🇮🇸",
-        "⛅️🌥☁️🌦☀️🌤❄️🌧⛈🌩🌨",
-        "👶👩🏿‍🦳🧔🏽‍♂️🕵🏻‍♀️👲👰🏻‍♂️👨🏻‍🚀👩‍💻🤴🏻💂🏾‍♀️🧑🏼‍🦱👨🏻‍🦳🧑🏻‍🌾🧕🏻🧑🏼‍🔬"
-    ]
-    var backColors = [Color.green.opacity(0.15), .blue.opacity(0.5), .gray.opacity(0.3)]
+
+    @ObservedObject var viewModel: EmojiMemoryGame
+    let backColors = [Color.green.opacity(0.15), .blue.opacity(0.5), .gray.opacity(0.3)]
     @State var set = 0
     
     // tries to adjust the card width to fit all the cards
@@ -30,13 +27,13 @@ struct ContentView: View {
             }
             Spacer()
             ScrollView {
-                let cards = emojis[set].map{String($0)}.shuffled()
-                let max = Int.random(in: 4...cards.count)
-                let width = widthThatFitsBest(cardCount: max)
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: width, maximum: width))]) {
-                    ForEach(cards.prefix(max), id: \.self) { emoji in
-                        CardView(content: emoji, background: backColors[set])
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 65))]) {
+                    ForEach(viewModel.cards) { card in
+                        CardView(card: card, background: backColors[set])
                             .aspectRatio(2/3, contentMode: .fit)
+                            .onTapGesture {
+                                viewModel.choose(card)
+                            }
                     }
                 }
             }
@@ -72,23 +69,21 @@ struct ButtonView: View {
 
 
 struct CardView: View {
-    var content : String
+    var card: MemoryGame<String>.Card
     var background: Color = .white
-    @State var isFaceUp = true
     
     var body: some View {
         ZStack {
             let cardShape = RoundedRectangle(cornerRadius: 20)
-            if isFaceUp {
+            if card.isFaceUp {
                 cardShape.fill().foregroundColor(background)
                 cardShape.strokeBorder(lineWidth: 3)
-                Text(content).font(.system(size: 60))
+                Text(card.content).font(.system(size: 60))
+            } else if card.isMatched {
+                cardShape.opacity(0)
             } else {
                 cardShape.fill()
             }
-        }
-        .onTapGesture {
-            isFaceUp.toggle()
         }
     }
 }
@@ -101,8 +96,9 @@ struct CardView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            ContentView().previewDevice("iPhone 12 mini").preferredColorScheme(.light)
-            ContentView().previewDevice("iPhone 12 mini").preferredColorScheme(.dark)
+            let game = EmojiMemoryGame()
+            ContentView(viewModel: game).previewDevice("iPhone 12 mini").preferredColorScheme(.light)
+            ContentView(viewModel: game).previewDevice("iPhone 12 mini").preferredColorScheme(.dark)
         }
     }
 }
