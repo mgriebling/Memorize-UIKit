@@ -10,8 +10,6 @@ import SwiftUI
 struct ContentView: View {
 
     @ObservedObject var viewModel: EmojiMemoryGame
-    let backColors = [Color.green.opacity(0.15), .blue.opacity(0.5), .gray.opacity(0.3)]
-    @State var set = 0
     
     // tries to adjust the card width to fit all the cards
     func widthThatFitsBest(cardCount: Int) -> CGFloat {
@@ -23,13 +21,13 @@ struct ContentView: View {
     var body: some View {
         VStack {
             HStack {
-                Text("Memorize!").font(.largeTitle)
+                Text(viewModel.title).font(.largeTitle)
             }
             Spacer()
             ScrollView {
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 65))]) {
                     ForEach(viewModel.cards) { card in
-                        CardView(card: card, background: backColors[set])
+                        CardView(card: card)
                             .aspectRatio(2/3, contentMode: .fit)
                             .onTapGesture {
                                 viewModel.choose(card)
@@ -40,33 +38,14 @@ struct ContentView: View {
             .foregroundColor(.red)
             Spacer()
             HStack {
-                Spacer()
-                ButtonView(label: "Flags", image: "flag") { set = 0 }
-                Spacer()
-                ButtonView(label: "Weather", image: "sun.max") { set = 1 }
-                Spacer()
-                ButtonView(label: "Faces", image: "face.smiling") { set = 2 }
-                Spacer()
+                Button("New Game") {
+                    viewModel.newGame()
+                }
             }
         }
         .padding(.horizontal)
     }
 }
-
-struct ButtonView: View {
-    var label: String
-    var image: String
-    var set: () -> ()
-    var body: some View {
-        VStack {
-            Image(systemName: image).font(.largeTitle)
-            Text(label).font(.footnote)
-        }
-        .foregroundColor(.accentColor)
-        .onTapGesture { set() }
-    }
-}
-
 
 struct CardView: View {
     var card: MemoryGame<String>.Card
