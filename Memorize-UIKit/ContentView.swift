@@ -27,7 +27,7 @@ struct ContentView: View {
             ScrollView {
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 65))]) {
                     ForEach(viewModel.cards) { card in
-                        CardView(card: card)
+                        CardView(card: card, background: viewModel.colour)
                             .aspectRatio(2/3, contentMode: .fit)
                             .onTapGesture {
                                 viewModel.choose(card)
@@ -35,12 +35,13 @@ struct ContentView: View {
                     }
                 }
             }
-            .foregroundColor(.red)
+            .foregroundColor(viewModel.colour)
             Spacer()
             HStack {
-                Button("New Game") {
-                    viewModel.newGame()
-                }
+                Text("Score: \(viewModel.score)").font(.largeTitle).bold()
+                Spacer()
+                Button("New Game") { viewModel.newGame() }
+                Spacer()
             }
         }
         .padding(.horizontal)
@@ -55,7 +56,7 @@ struct CardView: View {
         ZStack {
             let cardShape = RoundedRectangle(cornerRadius: 20)
             if card.isFaceUp {
-                cardShape.fill().foregroundColor(background)
+                cardShape.fill().foregroundColor(background.opacity(0.3))
                 cardShape.strokeBorder(lineWidth: 3)
                 Text(card.content).font(.system(size: 60))
             } else if card.isMatched {

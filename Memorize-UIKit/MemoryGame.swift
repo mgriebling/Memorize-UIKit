@@ -13,6 +13,8 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
     
     private var indexOfTheOnlyFaceUpCard: Int?
     
+    private(set) var score: Int = 0
+    
     mutating func choose(_ card: Card) {
         if let chosenIndex = cards.firstIndex(where: { card.id == $0.id }),
            !cards[chosenIndex].isMatched, !cards[chosenIndex].isFaceUp
@@ -21,12 +23,19 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
                 if cards[chosenIndex].content == cards[possibleMatchIndex].content {
                     cards[chosenIndex].isMatched = true
                     cards[possibleMatchIndex].isMatched = true
+                    score += 2
+                    print("Score: \(score)")
                 }
                 indexOfTheOnlyFaceUpCard = nil
             } else {
                 for index in cards.indices {
+                    if cards[index].isFaceUp && !cards[index].isMatched {
+                        if cards[index].wasSeen { score -= 1 }
+                        cards[index].wasSeen = true
+                    }
                     cards[index].isFaceUp = false
                 }
+                print("Score: \(score)")
                 indexOfTheOnlyFaceUpCard = chosenIndex
             }
             cards[chosenIndex].isFaceUp.toggle()
@@ -36,18 +45,26 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
     init(numberOfPairsOfCards: Int, createCardContent: (Int) -> CardContent) {
         cards = [Card]()
         
-        // add numberOfPairsOfCards x 2 cards to cards array
+        // verify the emojois are unique while building the deck
+        var contents = [CardContent]()
         for pairIndex in 0..<numberOfPairsOfCards {
             let content = createCardContent(pairIndex)
-            cards.append(Card(content: content, id: 2*pairIndex))
-            cards.append(Card(content: content, id: 2*pairIndex+1))
+            if !contents.contains(content) {
+                contents.append(content)
+                cards.append(Card(content: content, id: 2*pairIndex))
+                cards.append(Card(content: content, id: 2*pairIndex+1))
+            } else {
+                print("\(content) is a duplicate card! Ignoring...")
+            }
         }
+        score = 0
         cards.shuffle()
     }
     
     struct Card : Identifiable {
         var isFaceUp = false
         var isMatched = false
+        var wasSeen = false
         var content: CardContent
         var id: Int // Identifiable compliance
     }
