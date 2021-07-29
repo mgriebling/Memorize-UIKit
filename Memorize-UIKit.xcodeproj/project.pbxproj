@@ -24,6 +24,7 @@
 		47EA417126B164E1005A5DB8 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		47EA417426B164E1005A5DB8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		47EA417626B164E1005A5DB8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		47EA417C26B2A2ED005A5DB8 /* assignment_1.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = assignment_1.pdf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +63,7 @@
 				47EA416E26B164E1005A5DB8 /* Assets.xcassets */,
 				47EA417326B164E1005A5DB8 /* LaunchScreen.storyboard */,
 				47EA417626B164E1005A5DB8 /* Info.plist */,
+				47EA417D26B2A2F8005A5DB8 /* Assignments */,
 				47EA417026B164E1005A5DB8 /* Preview Content */,
 			);
 			path = "Memorize-UIKit";
@@ -73,6 +75,14 @@
 				47EA417126B164E1005A5DB8 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		47EA417D26B2A2F8005A5DB8 /* Assignments */ = {
+			isa = PBXGroup;
+			children = (
+				47EA417C26B2A2ED005A5DB8 /* assignment_1.pdf */,
+			);
+			path = Assignments;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
