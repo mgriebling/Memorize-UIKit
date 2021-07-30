@@ -11,9 +11,12 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
     
     private(set) var cards: [Card]
     
-    private var indexOfTheOnlyFaceUpCard: Int?
+    private var indexOfTheOnlyFaceUpCard: Int? {
+        get { cards.indices.filter({ cards[$0].isFaceUp }).oneAndOnly }
+        set { cards.indices.forEach { cards[$0].isFaceUp = $0 == newValue } }
+    }
     
-    private(set) var score: Int = 0
+    private(set) var score = 0
     
     private var lastTime = Date()
     
@@ -32,18 +35,14 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
                     cards[possibleMatchIndex].isMatched = true
                     score += getPoints(for: 2)
                 }
-                indexOfTheOnlyFaceUpCard = nil
+                cards[chosenIndex].isFaceUp = true
             } else {
-                for index in cards.indices {
-                    if cards[index].isFaceUp && !cards[index].isMatched {
-                        if cards[index].wasSeen { score -= 1 }
-                        cards[index].wasSeen = true
-                    }
-                    cards[index].isFaceUp = false
+                for index in cards.indices.filter({ cards[$0].isFaceUp && !cards[$0].isMatched }) {
+                    if cards[index].wasSeen { score -= 1 }
+                    cards[index].wasSeen = true
                 }
                 indexOfTheOnlyFaceUpCard = chosenIndex
             }
-            cards[chosenIndex].isFaceUp.toggle()
         }
         lastTime = Date()   // update the last chosen time
     }
@@ -71,8 +70,14 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
         var isFaceUp = false
         var isMatched = false
         var wasSeen = false
-        var content: CardContent
-        var id: Int // Identifiable compliance
+        let content: CardContent
+        let id: Int // Identifiable compliance
     }
+    
+}
+
+extension Array {
+    
+    var oneAndOnly: Element? { count == 1 ? first : nil }
     
 }

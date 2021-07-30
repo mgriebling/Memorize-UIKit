@@ -11,11 +11,12 @@ struct Theme<Content> {
     
     private(set) var name: String
     private(set) var emojiSet: [Content]
-    var numberOfPairs: Int { randomPairs ? Int.random(in: 4..._numberOfPairs) : _numberOfPairs }
-    private var _numberOfPairs: Int
-    private var randomPairs = false
+    private      var _numberOfPairs: Int
+    private      var randomPairs = false
     private(set) var useGradient = false
     private(set) var colour: String
+    
+    var numberOfPairs: Int { randomPairs ? Int.random(in: 4..._numberOfPairs) : _numberOfPairs }
     
     init(name: String, emojis: [Content], colour: String = "", numberOfPairs: Int = 0, useGradient: Bool = false) {
         self.name = name

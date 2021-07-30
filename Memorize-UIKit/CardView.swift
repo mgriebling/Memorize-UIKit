@@ -8,27 +8,39 @@
 import SwiftUI
 
 struct CardView: View {
-    var card: MemoryGame<String>.Card
+    var card: EmojiMemoryGame.Card
     var background: Color = .white
-    var useGradient: Bool = false
+    var useGradient = false
     
     var body: some View {
-        ZStack {
-            let cardShape = RoundedRectangle(cornerRadius: 20)
-            if card.isFaceUp {
-                cardShape.fill().foregroundColor(background.opacity(0.3))
-                cardShape.strokeBorder(lineWidth: 3)
-                Text(card.content).font(.system(size: 60))
-            } else if card.isMatched {
-                cardShape.opacity(0)
-            } else {
-                if useGradient {
-                    let gradient = LinearGradient(gradient: Gradient(colors: [.white, background]), startPoint: .top, endPoint: .bottom)
-                    cardShape.fill(gradient)
+        GeometryReader { geometry in
+            ZStack {
+                let cardShape = RoundedRectangle(cornerRadius: DrawingConstants.cornerRadius)
+                if card.isFaceUp {
+                    cardShape.fill().foregroundColor(background.opacity(DrawingConstants.opacity))
+                    cardShape.strokeBorder(lineWidth: DrawingConstants.lineWidth)
+                    Text(card.content).font(font(in: geometry.size))
+                } else if card.isMatched {
+                    cardShape.opacity(0)
                 } else {
-                    cardShape.fill()
+                    if useGradient {
+                        cardShape.fill(LinearGradient(gradient: Gradient(colors: [.white, background]), startPoint: .top, endPoint: .bottom))
+                    } else {
+                        cardShape.fill()
+                    }
                 }
             }
         }
+    }
+    
+    private func font(in size: CGSize) -> Font {
+        Font.system(size: 0.8 * min(size.width, size.height))
+    }
+    
+    private struct DrawingConstants {
+        static let cornerRadius = CGFloat(20)
+        static let lineWidth = CGFloat(3)
+        static let fontScale = CGFloat(0.8)
+        static let opacity = 0.3
     }
 }

@@ -9,34 +9,40 @@ import SwiftUI
 
 class EmojiMemoryGame : ObservableObject {
     
+    typealias Card = MemoryGame<String>.Card
+    
     static private let themes = [
-        Theme<String>(name: "Flags", emojis: ["🏁", "🇨🇦", "🏴‍☠️", "🇺🇸", "🇬🇧", "🇩🇪", "🏳️‍🌈", "🎌", "🇫🇲", "🇸🇳", "🇹🇿", "🇪🇸", "🇸🇱", "🇱🇷", "🇽🇰", "🇳🇷", "🇱🇨", "🇷🇪", "🇰🇷", "🇮🇸"], colour: "cyan", randomPairs: true),
-        Theme<String>(name: "Weather", emojis: ["⛅️", "🌥", "☁️", "🌦", "☀️", "🌤", "❄️", "🌧", "⛈", "🌩", "🌨"], colour: "blue", useGradient: true),
-        Theme<String>(name: "Faces", emojis: ["👶", "👩🏿‍🦳", "🧔🏽‍♂️", "🕵🏻‍♀️", "👲", "👰🏻‍♂️", "👨🏻‍🚀", "👩‍💻", "🤴🏻", "💂🏾‍♀️", "🧑🏼‍🦱", "👨🏻‍🦳", "🧑🏻‍🌾", "🧕🏻", "🧑🏼‍🔬"], colour: "orange", numberOfPairs: 10),
-        Theme<String>(name: "Vehicles", emojis: ["🚌", "🏎", "🛴", "🚑", "🚐", "🛵", "🚟", "🛩", "🚀", "🛺", "🛻", "🚕", "🚎", "🚓", "🛸", "⛵️", "🛶", "🚁", "🚲", "🚜"], colour: "gray"),
-        Theme<String>(name: "Food", emojis:["🍎", "🍐", "🍉", "🥥", "🥝", "🍅", "🍆", "🫐", "🍩", "🍬", "🥟", "🥨", "🥓", "🧇", "🍟", "🍕", "🥦", "🌽", "🍒", "🍰", "🍚", "🍤", "🍍"], colour: "pink"),
-        Theme<String>(name: "Animals", emojis: ["🐶", "🐱", "🐷", "🐸", "🐵", "🐻‍❄️", "🐻", "🐥", "🐒", "🐳", "🦀", "🦑", "🦕", "🦉", "🦆", "🪰", "🐍", "🦒", "🐓", "🐁", "🦢", "🐇", "🐈"], colour: "teal", randomPairs: true)
+        Theme<String>(name: "Flags", emojis: ["🏁","🇨🇦","🏴‍☠️","🇺🇸","🇬🇧","🇩🇪","🏳️‍🌈","🎌","🇫🇲","🇸🇳","🇹🇿","🇪🇸","🇸🇱","🇱🇷","🇽🇰","🇳🇷","🇱🇨","🇷🇪","🇰🇷","🇮🇸"], colour: "cyan", randomPairs: true),
+        Theme<String>(name: "Weather", emojis: ["⛅️","🌥","☁️","🌦","☀️","🌤","❄️","🌧","⛈","🌩","🌨"], colour: "blue", useGradient: true),
+        Theme<String>(name: "Faces", emojis: ["👶","👩🏿‍🦳","🧔🏽‍♂️","🕵🏻‍♀️","👲","👰🏻‍♂️","👨🏻‍🚀","👩‍💻","🤴🏻","💂🏾‍♀️","🧑🏼‍🦱","👨🏻‍🦳","🧑🏻‍🌾","🧕🏻","🧑🏼‍🔬"], colour: "orange", numberOfPairs: 10),
+        Theme<String>(name: "Vehicles", emojis: ["🚌","🏎","🛴","🚑","🚐","🛵","🚟","🛩","🚀","🛺","🛻","🚕","🚎","🚓","🛸","⛵️","🛶","🚁","🚲","🚜"], colour: "gray"),
+        Theme<String>(name: "Food", emojis:["🍎","🍐","🍉","🥥","🥝","🍅","🍆","🫐","🍩","🍬","🥟","🥨","🥓","🧇","🍟","🍕","🥦","🌽","🍒","🍰","🍚","🍤","🍍"], colour: "pink"),
+        Theme<String>(name: "Animals", emojis: ["🐶","🐱","🐷","🐸","🐵","🐻‍❄️","🐻","🐥","🐒","🐳","🦀","🦑","🦕","🦉","🦆","🪰","🐍","🦒","🐓","🐁","🦢","🐇","🐈"], colour: "teal", randomPairs: true)
     ]
     
     static private func createMemoryGame(theme: Theme<String>) -> MemoryGame<String> {
-        return MemoryGame<String>(numberOfPairsOfCards: theme.numberOfPairs) { pairIndex in
+        MemoryGame<String>(numberOfPairsOfCards: theme.numberOfPairs) { pairIndex in
             theme.emojiSet[pairIndex]
         }
     }
     
-    public init() {
-        let theme = EmojiMemoryGame.themes.randomElement()!
-        title = "\(theme.name) Memorize!"
+    private func setValues(theme: Theme<String>) {
         model = EmojiMemoryGame.createMemoryGame(theme: theme)
+        title = "\(theme.name) Memorize!"
         colour = EmojiMemoryGame.colorForName(theme.colour)
         useGradient = theme.useGradient
     }
     
-    @Published private var model : MemoryGame<String>
+    public init() {
+        let theme = EmojiMemoryGame.themes.randomElement()!
+        model = EmojiMemoryGame.createMemoryGame(theme: theme)
+        setValues(theme: theme)
+    }
     
-    private(set) var title : String
-    private(set) var colour : Color
-    private(set) var useGradient : Bool
+    @Published private var model : MemoryGame<String>
+    private(set) var title = ""
+    private(set) var colour = Color.black
+    private(set) var useGradient = false
     var score : Int { model.score }
     
     private static func colorForName(_ name: String) -> Color {
@@ -61,14 +67,11 @@ class EmojiMemoryGame : ObservableObject {
     
     // MARK: - Intents
     
-    func choose(_ card: MemoryGame<String>.Card) { model.choose(card) }
+    func choose(_ card: Card) { model.choose(card) }
     
     func newGame() {
         let theme = EmojiMemoryGame.themes.randomElement()!
-        title = "\(theme.name) Memorize!"
-        model = EmojiMemoryGame.createMemoryGame(theme: theme)
-        colour = EmojiMemoryGame.colorForName(theme.colour)
-        useGradient = theme.useGradient
+        setValues(theme: theme)
     }
     
 }

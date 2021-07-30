@@ -8,14 +8,12 @@
 import SwiftUI
 
 struct EmojiMemoryGameView: View {
-
+    
     @ObservedObject var game: EmojiMemoryGame
     
     var body: some View {
         VStack {
-            HStack {
-                Text(game.title).font(.largeTitle)
-            }
+            HStack { Text(game.title).font(.largeTitle) }
             Spacer()
             ScrollView {
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 65))]) {
