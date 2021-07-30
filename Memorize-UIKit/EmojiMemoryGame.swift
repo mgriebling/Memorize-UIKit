@@ -11,7 +11,7 @@ class EmojiMemoryGame : ObservableObject {
     
     static private let themes = [
         Theme<String>(name: "Flags", emojis: ["🏁", "🇨🇦", "🏴‍☠️", "🇺🇸", "🇬🇧", "🇩🇪", "🏳️‍🌈", "🎌", "🇫🇲", "🇸🇳", "🇹🇿", "🇪🇸", "🇸🇱", "🇱🇷", "🇽🇰", "🇳🇷", "🇱🇨", "🇷🇪", "🇰🇷", "🇮🇸"], colour: "cyan", randomPairs: true),
-        Theme<String>(name: "Weather", emojis: ["⛅️", "🌥", "☁️", "🌦", "☀️", "🌤", "❄️", "🌧", "⛈", "🌩", "🌨"], colour: "blue"),
+        Theme<String>(name: "Weather", emojis: ["⛅️", "🌥", "☁️", "🌦", "☀️", "🌤", "❄️", "🌧", "⛈", "🌩", "🌨"], colour: "blue", useGradient: true),
         Theme<String>(name: "Faces", emojis: ["👶", "👩🏿‍🦳", "🧔🏽‍♂️", "🕵🏻‍♀️", "👲", "👰🏻‍♂️", "👨🏻‍🚀", "👩‍💻", "🤴🏻", "💂🏾‍♀️", "🧑🏼‍🦱", "👨🏻‍🦳", "🧑🏻‍🌾", "🧕🏻", "🧑🏼‍🔬"], colour: "orange", numberOfPairs: 10),
         Theme<String>(name: "Vehicles", emojis: ["🚌", "🏎", "🛴", "🚑", "🚐", "🛵", "🚟", "🛩", "🚀", "🛺", "🛻", "🚕", "🚎", "🚓", "🛸", "⛵️", "🛶", "🚁", "🚲", "🚜"], colour: "gray"),
         Theme<String>(name: "Food", emojis:["🍎", "🍐", "🍉", "🥥", "🥝", "🍅", "🍆", "🫐", "🍩", "🍬", "🥟", "🥨", "🥓", "🧇", "🍟", "🍕", "🥦", "🌽", "🍒", "🍰", "🍚", "🍤", "🍍"], colour: "pink"),
@@ -29,12 +29,14 @@ class EmojiMemoryGame : ObservableObject {
         title = "\(theme.name) Memorize!"
         model = EmojiMemoryGame.createMemoryGame(theme: theme)
         colour = EmojiMemoryGame.colorForName(theme.colour)
+        useGradient = theme.useGradient
     }
     
     @Published private var model : MemoryGame<String>
     
     private(set) var title : String
     private(set) var colour : Color
+    private(set) var useGradient : Bool
     var score : Int { model.score }
     
     private static func colorForName(_ name: String) -> Color {
@@ -66,6 +68,7 @@ class EmojiMemoryGame : ObservableObject {
         title = "\(theme.name) Memorize!"
         model = EmojiMemoryGame.createMemoryGame(theme: theme)
         colour = EmojiMemoryGame.colorForName(theme.colour)
+        useGradient = theme.useGradient
     }
     
 }
