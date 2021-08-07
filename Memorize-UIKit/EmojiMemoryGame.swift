@@ -27,7 +27,7 @@ class EmojiMemoryGame : ObservableObject {
     }
     
     private func setValues(theme: Theme<String>) {
-        model = EmojiMemoryGame.createMemoryGame(theme: theme)
+        game = EmojiMemoryGame.createMemoryGame(theme: theme)
         title = "\(theme.name) Memorize!"
         colour = EmojiMemoryGame.colorForName(theme.colour)
         useGradient = theme.useGradient
@@ -35,15 +35,15 @@ class EmojiMemoryGame : ObservableObject {
     
     public init() {
         let theme = EmojiMemoryGame.themes.randomElement()!
-        model = EmojiMemoryGame.createMemoryGame(theme: theme)
+        game = EmojiMemoryGame.createMemoryGame(theme: theme)
         setValues(theme: theme)
     }
     
-    @Published private var model : MemoryGame<String>
+    @Published private var game : MemoryGame<String>
     private(set) var title = ""
     private(set) var colour = Color.black
     private(set) var useGradient = false
-    var score : Int { model.score }
+    var score : Int { game.score }
     
     private static func colorForName(_ name: String) -> Color {
         switch name {
@@ -63,11 +63,11 @@ class EmojiMemoryGame : ObservableObject {
         }
     }
     
-    var cards: [MemoryGame<String>.Card] { model.cards }
+    var cards: [MemoryGame<String>.Card] { game.cards }
     
     // MARK: - Intents
     
-    func choose(_ card: Card) { model.choose(card) }
+    func choose(_ card: Card) { game.choose(card) }
     
     func newGame() {
         let theme = EmojiMemoryGame.themes.randomElement()!

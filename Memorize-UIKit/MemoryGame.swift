@@ -48,7 +48,7 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
     }
     
     init(numberOfPairsOfCards: Int, createCardContent: (Int) -> CardContent) {
-        cards = [Card]()
+        cards = []
         
         // verify the emojois are unique while building the deck
         var contents = [CardContent]()

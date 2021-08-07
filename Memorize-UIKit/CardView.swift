@@ -8,39 +8,29 @@
 import SwiftUI
 
 struct CardView: View {
-    var card: EmojiMemoryGame.Card
+    let card: EmojiMemoryGame.Card
     var background: Color = .white
     var useGradient = false
     
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                let cardShape = RoundedRectangle(cornerRadius: DrawingConstants.cornerRadius)
-                if card.isFaceUp {
-                    cardShape.fill().foregroundColor(background.opacity(DrawingConstants.opacity))
-                    cardShape.strokeBorder(lineWidth: DrawingConstants.lineWidth)
-                    Text(card.content).font(font(in: geometry.size))
-                } else if card.isMatched {
-                    cardShape.opacity(0)
-                } else {
-                    if useGradient {
-                        cardShape.fill(LinearGradient(gradient: Gradient(colors: [.white, background]), startPoint: .top, endPoint: .bottom))
-                    } else {
-                        cardShape.fill()
-                    }
-                }
+                Text(card.content)
+                    .padding(5)
+                    .font(.system(size: DrawingConstants.fontSize))
+                    .scaleEffect(scale(thatFits: geometry.size))
             }
+            .cardify(isFaceUp: card.isFaceUp)
         }
     }
     
-    private func font(in size: CGSize) -> Font {
-        Font.system(size: 0.8 * min(size.width, size.height))
+    // the "scale factor" to scale our Text up so that it fits the geometry.size offered to us
+    private func scale(thatFits size: CGSize) -> CGFloat {
+        min(size.width, size.height) / (DrawingConstants.fontSize / DrawingConstants.fontScale)
     }
     
     private struct DrawingConstants {
-        static let cornerRadius = CGFloat(20)
-        static let lineWidth = CGFloat(3)
-        static let fontScale = CGFloat(0.8)
-        static let opacity = 0.3
+        static let fontScale = CGFloat(0.7)
+        static let fontSize = CGFloat(32)
     }
 }
