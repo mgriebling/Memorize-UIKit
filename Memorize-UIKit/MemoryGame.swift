@@ -22,25 +22,25 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
     private let bonusAmount = Double(3)  // reduces with bonusTime
     
     private mutating func getBonus(for card: Card) -> Int {
-        return card.hasEarnedBonus ? Int(round(card.bonusRemaining*bonusAmount)) : 1
+        card.hasEarnedBonus ? Int(round(card.bonusRemaining*bonusAmount)) : 1
     }
     
     mutating func choose(_ card: Card) {
-        if let chosenIndex = cards.firstIndex(where: { card.id == $0.id }),
-           !cards[chosenIndex].isMatched, !cards[chosenIndex].isFaceUp
-        {
+        let a = !cards[card].isMatched
+        let b = !cards[card].isFaceUp
+        if a && b {
             if let possibleMatchIndex = indexOfTheOnlyFaceUpCard {
-                if cards[chosenIndex].content == cards[possibleMatchIndex].content {
-                    cards[chosenIndex].isMatched = true
+                if cards[card].content == cards[possibleMatchIndex].content {
+                    cards[card].isMatched = true
                     cards[possibleMatchIndex].isMatched = true
-                    score += getBonus(for: cards[chosenIndex]) + getBonus(for: cards[possibleMatchIndex])
+                    score += getBonus(for: cards[card]) + getBonus(for: cards[possibleMatchIndex])
                 }
-                cards[chosenIndex].isFaceUp = true
+                cards[card].isFaceUp = true
             } else {
                 for index in cards.indices.filter({ cards[$0].isFaceUp && !cards[$0].isMatched }) {
                     if cards[index].wasSeen { score -= 1 }
                 }
-                indexOfTheOnlyFaceUpCard = chosenIndex
+                indexOfTheOnlyFaceUpCard = cards.index(matching: card)
             }
         }
     }
